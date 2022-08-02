@@ -18,9 +18,9 @@ app.post("/api/get-url-data", async (req, res) => {
 
   try {
     const data = await scraper(url);
-    res.json(data);
+    res.json({ status: 200, data });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ status: 500, error: error.message });
   }
 });
 
