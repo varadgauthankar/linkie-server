@@ -49,33 +49,44 @@ function _getDescription(data) {
 }
 
 function _getImage(data, url) {
-  // get image from meta data
+  // first try to get image from meta data
   const metaDataImage = data("meta[property='og:image']").attr("content");
 
-  // if meta data not found, get the first image tag
-  if (metaDataImage == undefined) {
+  //! meta data image
+  if (metaDataImage) {
+    return metaDataImage;
+  }
+
+  //! first image
+  // if failed, try to get first image from the page
+  else {
     const firstImage = data("img").first().attr("src");
 
-    // if first image is not found OR first image is not a valid url. return favicon
-    // in most cases if first image is not a valid url, then it's not appropriate image we need
-    if (firstImage == undefined || !firstImage.startsWith("http")) {
+    if (firstImage && firstImage.startsWith("http")) {
+      // if first image is not found OR first image is not a valid url. return favicon
+      // in most cases if first image is not a valid url, then it's not appropriate image we need
+      return firstImage;
+    }
+
+    //! favicon
+    // if failed, try to get favicon icon
+    else {
       const favicon =
         data("link[rel='shortcut icon']").first().attr("href") ||
         data("link[rel='icon']").first().attr("href");
 
-      // most favicon are relative url, so we need to add the domain to it
-      if (!favicon.startsWith("http")) {
-        return url + favicon;
+      if (favicon) {
+        if (favicon.startsWith("http")) {
+          return favicon;
+        } else {
+          return url + favicon;
+        }
       }
-
-      return favicon;
     }
-
-    return firstImage;
   }
 
-  // else return meta data
-  return metaDataImage;
+  // return empty if everything failed
+  return null;
 }
 
 module.exports = scraper;
