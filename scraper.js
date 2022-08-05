@@ -14,8 +14,9 @@ async function scraper(url) {
     const image = _getImage($, url);
     const domain = new URL(_validatedUrl(url)).hostname.replace("www.", ""); // get domain from url
     const favicon = _getFavicon($, url);
+    const link = _getLink(url);
 
-    return { title, description, image, url, domain, favicon };
+    return { title, description, image, url: link, domain, favicon };
   } else {
     throw new Error("Could not fetch data");
   }
@@ -104,6 +105,14 @@ function _validatedImageUrl(imageUrl, domain) {
     return imageUrl;
   } else {
     return domain + imageUrl;
+  }
+}
+
+function _getLink(url) {
+  if (url.startsWith("http")) {
+    return url;
+  } else {
+    return "http://" + url;
   }
 }
 
