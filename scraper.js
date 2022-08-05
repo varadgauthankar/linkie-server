@@ -13,8 +13,9 @@ async function scraper(url) {
     const description = _getDescription($);
     const image = _getImage($, url);
     const domain = new URL(_validatedUrl(url)).hostname.replace("www.", ""); // get domain from url
+    const favicon = _getFavicon($, url);
 
-    return { title, description, image, url, domain };
+    return { title, description, image, url, domain, favicon };
   } else {
     throw new Error("Could not fetch data");
   }
@@ -71,9 +72,7 @@ function _getImage(data, url) {
     //! favicon
     // if failed, try to get favicon icon
     else {
-      const favicon =
-        data("link[rel='shortcut icon']").first().attr("href") ||
-        data("link[rel='icon']").first().attr("href");
+      const favicon = _getFavicon(data, url);
 
       if (favicon) {
         if (favicon.startsWith("http")) {
@@ -87,6 +86,18 @@ function _getImage(data, url) {
 
   // return empty if everything failed
   return null;
+}
+
+function _getFavicon(data, url) {
+  favicon =
+    data("link[rel='shortcut icon']").first().attr("href") ||
+    data("link[rel='icon']").first().attr("href");
+
+  if (favicon) {
+    return favicon;
+  } else {
+    return `https://www.google.com/s2/favicons?domain=${url}`;
+  }
 }
 
 module.exports = scraper;
