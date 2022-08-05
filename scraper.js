@@ -72,15 +72,15 @@ function _getImage(data, url) {
       return firstImage;
     }
 
-    //! favicon
-    // if failed, try to get favicon icon
-    else {
-      const favicon = _getFavicon(data, url);
+    // //! favicon
+    // // if failed, try to get favicon icon
+    // else {
+    //   const favicon = _getFavicon(data, url);
 
-      if (favicon) {
-        return _validatedImageUrl(favicon, url);
-      }
-    }
+    //   if (favicon) {
+    //     return _validatedImageUrl(favicon, url);
+    //   }
+    // }
   }
 
   // return empty if everything failed
