@@ -55,7 +55,8 @@ function _getImage(data, url) {
 
   //! meta data image
   if (metaDataImage) {
-    return metaDataImage;
+    console.log("meta data image");
+    return _validatedImageUrl(metaDataImage, url);
   }
 
   //! first image
@@ -66,6 +67,7 @@ function _getImage(data, url) {
     if (firstImage && firstImage.startsWith("http")) {
       // if first image is not found OR first image is not a valid url. return favicon
       // in most cases if first image is not a valid url, then it's not appropriate image we need
+      console.log("first image");
       return firstImage;
     }
 
@@ -75,11 +77,7 @@ function _getImage(data, url) {
       const favicon = _getFavicon(data, url);
 
       if (favicon) {
-        if (favicon.startsWith("http")) {
-          return favicon;
-        } else {
-          return url + favicon;
-        }
+        return _validatedImageUrl(favicon, url);
       }
     }
   }
@@ -94,9 +92,18 @@ function _getFavicon(data, url) {
     data("link[rel='icon']").first().attr("href");
 
   if (favicon) {
-    return favicon;
+    return _validatedImageUrl(favicon, url);
   } else {
     return `https://www.google.com/s2/favicons?domain=${url}`;
+  }
+}
+
+// check if image is relative url
+function _validatedImageUrl(imageUrl, domain) {
+  if (imageUrl.startsWith("http")) {
+    return imageUrl;
+  } else {
+    return domain + imageUrl;
   }
 }
 
